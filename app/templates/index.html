@@ -1,17 +1,55 @@
-<!DOCTYPE html> {% load static %}
-<html lang="en">
+<!DOCTYPE html>
+{% load static %}
+{% load imagekit %} {# Yeni resim sistemimiz için gerekli #}
 
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static '/style.css' %}">
-
+    <title>Django Template Test Page</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        .test-container { margin: 20px; padding: 20px; border: 1px solid #ccc; }
+        .image-box { display: inline-block; margin-right: 10px; text-align: center; }
+        img { border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .no-image { color: #888; font-style: italic; }
+    </style>
 </head>
 
 <body>
-    <h1>Anasayfa</h1>
-</body>
+    <h1>Django Template Başarıyla Çalışıyor!</h1>
+    <p>Statik dosya testi: <span style="color: green;">CSS Yüklendi ✅</span></p>
 
+    <div class="test-container">
+        <h2>Dinamik Resim & SEO Testi (Sample Model)</h2>
+        
+        {# sample_list'in view'dan geldiğini varsayıyoruz #}
+        {% for obj in sample_list %}
+            <div class="image-box">
+                <h3>Orijinal (Watermarklı)</h3>
+                {% if obj.attachment %}
+                    {# 1. Test: AVIF formatı (300x200) #}
+                    {% generateimage 'core:seo_image' source=obj.attachment width=300 height=200 format='AVIF' as img_avif %}
+                    <picture>
+                        <source srcset="{{ img_avif.url }}" type="image/avif">
+                        
+                        {# 2. Test: WebP formatı (300x200) #}
+                        {% generateimage 'core:seo_image' source=obj.attachment width=300 height=200 format='WEBP' as img_webp %}
+                        <source srcset="{{ img_webp.url }}" type="image/webp">
+                        
+                        <img src="{{ obj.attachment.url }}" alt="Test Resmi" width="300">
+                    </picture>
+                    <p><small>Format: AVIF/WebP (300x200)</small></p>
+                {% else %}
+                    <p class="no-image">Bu nesne için resim yüklenmemiş.</p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Henüz veritabanında test edilecek bir 'Sample' objesi yok. <br>
+            Lütfen Admin panelinden bir tane ekleyin.</p>
+        {% endfor %}
+    </div>
+
+</body>
 </html>

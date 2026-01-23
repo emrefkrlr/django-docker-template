@@ -47,14 +47,13 @@ INSTALLED_APPS = [
     # Local Apps
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
-    
-    
 
     # Third Party Apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'imagekit',
     
 ]
 
@@ -273,3 +272,9 @@ SOCIALACCOUNT_PROVIDERS = {
         'OAUTH_TOKEN_VARIABLE': 'JS_SDK'
     }
 }
+
+
+
+# Image Processing Settings
+WATERMARK_ENABLED = os.environ.get("WATERMARK_ENABLED", "False") == "True"
+IMAGEKIT_DEFAULT_CACHEFILE_BACKEND = 'imagekit.cachefiles.backends.Simple'

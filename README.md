@@ -15,7 +15,89 @@
 
 - **Proxy Hazırlığı:** Üretim (Production) ortamı için Nginx proxy yapılandırması hazır.
 
-## 🛠️ Hızlı Kurulum
+* **Dinamik Format Dönüştürme:** Tüm resimler otomatik olarak **WebP** ve **AVIF** formatlarında sunulur.
+* **On-the-fly Boyutlandırma:** Template içinden istenilen her boyutta resim üretilebilir (örn: 300x200, 800x600).
+* **Akıllı Watermark:** * Resim boyutuna göre otomatik ölçeklenen dinamik font boyutu.
+    * Merkezi konumlandırma ve ayarlanabilir şeffaflık.
+    * `.env` üzerinden açılıp kapatılabilme özelliği.
+* **Performans:** Üretilen resimler `media/CACHE/` altında saklanır, tekrar tekrar işlenmez.
+
+
+## 🖼️ Gelişmiş Resim İşleme ve SEO Yönetimi
+Bu template, görsel içeriklerin hem SEO performansını artırmak hem de sunucu kaynaklarını verimli kullanmak için Django-ImageKit, Pillow-Heif ve özel geliştirilmiş bir Watermark Service ile entegre gelir.
+
+### 🌟 Öne Çıkan Özellikler
+- Dinamik Format Dönüşümü: Orijinal resim ne olursa olsun (JPG, PNG), sistem bunları otomatik olarak modern WebP ve AVIF formatlarına dönüştürür.
+
+- On-the-Fly (Anlık) Boyutlandırma: Modellerde onlarca farklı boyut tanımlamanıza gerek kalmaz. Boyutlandırma doğrudan template (HTML) üzerinden yönetilir.
+
+- Akıllı Watermark Sistemi:
+
+- Resim boyutuna göre %12 oranında dinamik ölçeklenen yazı boyutu.
+
+- Yüksek çözünürlüklü resimlerde bile net okunan Bold (Kalın) font desteği.
+- Merkezi konumlandırma ve %60 şeffaflık ile profesyonel görünüm.
+
+- Performans & Cache: İşlenen resimler media/CACHE/ dizininde saklanır. Bir resim sadece bir kez işlenir ve sonraki isteklerde cache'den sunulur.
+
+## ⚙️ Yapılandırma
+Watermark özelliğini ortam değişkenleri üzerinden kolayca yönetebilirsiniz:
+
+**docker-compose.yml veya .env:**
+```python
+environment:
+  - WATERMARK_ENABLED=True  # Watermark'ı açar (True) veya kapatır (False)
+```
+
+## 🚀 Kullanım Rehberi
+### 1. Model Yapısı
+Herhangi bir modelde ImageField veya FileField kullanmanız yeterlidir. save() metodunda apply_watermark fonksiyonunu çağırmak, yüklenen orijinal resmi otomatik olarak mühürler.
+
+```python
+# core/models.py
+from .image_service import apply_watermark
+
+class Sample(models.Model):
+    attachment = models.ImageField(upload_to='samples/')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.attachment:
+            apply_watermark(self.attachment.path)
+
+```
+
+### 2. Template (HTML) İçinde Kullanım
+Resimleri farklı boyutlarda ve modern formatlarda çağırmak için core:seo_image jeneratörünü kullanın:
+
+```html
+{% load imagekit %}
+
+<picture>
+    {# AVIF Versiyonu (En yüksek sıkıştırma) #}
+    {% generateimage 'core:seo_image' source=obj.attachment width=800 height=600 format='AVIF' as img_avif %}
+    <source srcset="{{ img_avif.url }}" type="image/avif">
+
+    {# WebP Versiyonu (Yüksek uyumluluk) #}
+    {% generateimage 'core:seo_image' source=obj.attachment width=800 height=600 format='WEBP' as img_webp %}
+    <source srcset="{{ img_webp.url }}" type="image/webp">
+
+    {# Fallback (Orijinal resim) #}
+    <img src="{{ obj.attachment.url }}" alt="Açıklama" width="800" height="600">
+</picture>
+````
+
+## 🛠️ Teknik Gereksinimler
+Bu sistemin çalışması için requirements.txt dosyasında aşağıdaki paketler tanımlıdır:
+
+- **django-imagekit:** Dinamik işleme için.
+
+- **pillow-heif:** AVIF yazma desteği için.
+
+- **Pillow:** Temel görüntü işleme için.
+
+
+## 🛠️ Proje Hızlı Kurulum
 Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyin:
 
 ### 1. Projeyi Klonlayın
