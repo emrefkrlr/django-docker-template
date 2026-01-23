@@ -43,7 +43,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
+
+    # Local Apps
+    'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
+    
+    
+
+    # Third Party Apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    
 ]
 
 MIDDLEWARE = [
@@ -54,9 +66,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'app.urls'
+AUTH_USER_MODEL = 'users.User'
 
 TEMPLATES = [
     {
@@ -228,5 +243,33 @@ LOGGING = {
             'level': 'WARNING', # Varsayılan olarak WARNING ve üzeri logları göster
             'propagate': True,
         },
+    }
+}
+
+# 3. Allauth Özel Ayarları
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email' # Email ile giriş
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'optional' # Template olduğu için 'optional' en iyisidir
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# 4. Sosyal Hesap Sağlayıcıları (Dinamik ve Opsiyonel Yapı)
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID', ''),
+            'secret': os.environ.get('GOOGLE_SECRET', ''),
+            'key': ''  # Google için genellikle boş bırakılır
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_TOKEN_VARIABLE': 'JS_SDK'
     }
 }
