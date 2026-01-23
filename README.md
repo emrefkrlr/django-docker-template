@@ -31,6 +31,12 @@ git clone https://github.com/emrefkrlr/django-docker-template.git
 cp .env.sample .env
 ````
 
+### 3. Ortamı Ayağa Kaldırma ve başlatma
+```bash
+docker compose up -d --build
+```
+
+
 Bu komut; veritabanını oluşturur, migration'ları yapar ve web sunucusunu http://localhost:8000 adresinde başlatır.
 
 ## 🔑 Sosyal Giriş (Google OAuth) Kurulumu
