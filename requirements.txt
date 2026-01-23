@@ -1,3 +1,9 @@
-Django>=3.2.3,<3.3
-psycopg2>=2.8.6,<2.9
-uWSGI>=2.0.19.1,<2.1
+Django>=5.0,<5.1 # En güncel Django LTS veya stabil sürümü
+psycopg2-binary>=2.9.9,<3.0 # psycopg2'nin güncel ve binary paketi
+uWSGI>=2.0.23,<2.1 # En güncel stabil uWSGI sürümü
+djangorestframework>=3.14,<3.15 # Django REST Framework (API için gerekli)
+Pillow                     # Görüntü işleme kütüphanesi (django-imagekit için bağımlılık)
+django-imagekit            # Django için görüntü işleme ve dönüştürme kütüphanesi
+pillow-heif                # AVIF desteği
+django-cleanup             # 
+django-tinymce             # Text Field için

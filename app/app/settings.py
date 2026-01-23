@@ -125,20 +125,108 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
+# Bu URL, web tarayıcısının statik dosyalara erişmek için kullanacağı önektir.
+# Genellikle '/static/' olarak ayarlanır. Nginx de bu URL'i dinler.
+STATIC_URL = '/static/'
 
-STATIC_URL = '/static/static/'
-MEDIA_URL = '/static/media/'
+# Medya dosyaları (kullanıcı tarafından yüklenen resimler, videolar vb.)
+# Bu URL, web tarayıcısının medya dosyalarına erişmek için kullanacağı önektir.
+# Genellikle '/media/' olarak ayarlanır. Nginx de bu URL'i dinler.
+MEDIA_URL = '/media/'
 
+# 'python manage.py collectstatic' komutunun statik dosyaları toplayacağı dizin.
+# Bu dizin, Docker volume'ü aracılığıyla hem uygulama hem de Nginx konteynerleri tarafından paylaşılacaktır.
 MEDIA_ROOT = '/vol/web/media'
+
+# Kullanıcı tarafından yüklenen medya dosyalarının saklanacağı dizin.
+# Bu dizin de Docker volume'ü aracılığıyla paylaşılacaktır.
 STATIC_ROOT = '/vol/web/static'
 
+# Geliştirme sırasında Django'nun statik dosyaları arayacağı ek dizinler.
+# 'BASE_DIR / "static"' genellikle Django uygulamanızın kendi statik dosyalarını içerir.
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    
 ]
+
+IMAGEKIT_SPEC_CACHEFILE_NAMING_SCHEME = 'source_path_as_hash' # veya 'spec_slug'
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.JustInTime' # Varsayılan bu olmalı
+# Default primary key field type
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# TinyMCE Ayarları
+TINYMCE_JS_URL = STATIC_URL + "tinymce/tinymce.min.js"
+TINYMCE_COMPRESSOR = False # Geliştirme ortamında False olması iyi
+TINYMCE_SPELLCHECKER = False # İsteğe bağlı
+TINYMCE_TOOLBAR = "undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | forecolor backcolor | formatselect fontsizeselect" # Temel toolbar düğmeleri
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'menubar': 'file edit view insert format tools table help',
+    'plugins': 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount autoresize',
+    'toolbar': TINYMCE_TOOLBAR,
+    'custom_undo_redo_levels': 10,
+    'paste_data_images': True, # Resimleri doğrudan yapıştırma (isteğe bağlı)
+    'relative_urls': False, # Göreli URL'leri kapatır
+    'remove_script_host': True,
+    'convert_urls': False,
+    'image_title': True,
+    'automatic_uploads': True,
+    'file_picker_types': 'image',
+    'file_picker_callback': 'tinymce_file_picker', # Resim yükleyici için özel fonksiyon
+    'images_upload_url': '/tinymce/upload/', # TinyMCE'nin resim yükleme URL'si
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False, # Django'nun mevcut loglayıcılarını devre dışı bırakmayın
+
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG', # DEBUG seviyesindeki ve daha yüksek tüm mesajları göster
+            'class': 'logging.StreamHandler', # Konsola yaz
+            'formatter': 'simple', # Basit format kullan
+        },
+    },
+    'loggers': {
+        # Kendi uygulamanızın loglayıcısı (örn. 'institutions' veya 'institution_media')
+        # Bu, uygulamalarınızdaki loglama mesajlarını yakalar
+        'institutions': { # 'institutions' uygulamanızın loglarını yakala
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False, # Bu loglayıcının mesajlarını üst loglayıcılara gönderme (çift loglamayı önler)
+        },
+        'institution_media': { # 'institution_media' uygulamanızın loglarını yakala
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Eğer admin.py'de 'institutions.admin' gibi belirli bir logger adı kullandıysanız,
+        # onu da burada tanımlayabilirsiniz. Önceki cevabımda __name__ kullandık,
+        # bu da 'institutions.admin' veya 'institution_media.admin' gibi isimler alacak.
+        'django': { # Django'nun kendi iç logları için
+            'handlers': ['console'],
+            'level': 'INFO', # Django'nun genel logları için INFO seviyesi yeterli olabilir
+            'propagate': False,
+        },
+        '': { # Kök loglayıcı (eğer yukarıda eşleşmeyen bir logger varsa)
+            'handlers': ['console'],
+            'level': 'WARNING', # Varsayılan olarak WARNING ve üzeri logları göster
+            'propagate': True,
+        },
+    }
+}

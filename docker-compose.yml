@@ -1,9 +1,8 @@
-version: '3.9'
-
 services:
   app:
     build:
       context: .
+    container_name: dev-app # Bu satır eklendi!
     command: >
       sh -c "python manage.py wait_for_db &&
              python manage.py migrate &&
@@ -12,7 +11,7 @@ services:
       - 8000:8000
     volumes:
       - ./app:/app
-      - ./data/web:/vol/web
+      - ./data/web:/vol/web # Statik ve medya dosyaları için
     environment:
       - SECRET_KEY=devsecretkey
       - DEBUG=1
@@ -24,8 +23,17 @@ services:
       - db
 
   db:
-    image: postgres:13-alpine
+    image: postgres:16-alpine
+    container_name: dev-db # Bu satır eklendi!
     environment:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
+    ports:
+      - "5432:5432" # DBeaver gibi harici araçlarla bağlanmak için
+    volumes:
+      - dev_db_data:/var/lib/postgresql/data
+
+# Volume tanımı
+volumes:
+  dev_db_data:

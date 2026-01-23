@@ -1,5 +1,7 @@
-FROM nginxinc/nginx-unprivileged:1-alpine
-LABEL maintainer="londonappdeveloper.com"
+# En güncel Nginx Alpine sürümü
+FROM nginxinc/nginx-unprivileged:1.26-alpine
+
+LABEL maintainer="emrefikirlier@gmail.com"
 
 COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
 COPY ./uwsgi_params /etc/nginx/uwsgi_params
