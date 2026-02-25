@@ -22,11 +22,11 @@
     * `.env` üzerinden açılıp kapatılabilme özelliği.
 * **Performans:** Üretilen resimler `media/CACHE/` altında saklanır, tekrar tekrar işlenmez.
 
-* **Multi-Language (i18n):** TR/EN support with prefix-less default language.
+* **Multi-Language (i18n):** Öneksiz varsayılan dil ile TR / EN desteği.
 
-* **Dynamic Menus:** Database-driven header and footer menus with external URL support.
+* **Dynamic Menus:** Harici URL desteği ile veritabanı odaklı üstbilgi ve altbilgi menüleri.
 
-* **System Dashboard:** A stylish index.html to monitor system status and test all features.
+* **System Dashboard:** Şık bir indeks.sistem durumunu izlemek ve tüm özellikleri test etmek için html.
 
 
 ## 🖼️ Gelişmiş Resim İşleme ve SEO Yönetimi

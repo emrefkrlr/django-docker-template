@@ -132,6 +132,13 @@
         </div>
     </div>
 
+    <div class="card">
+        <h3>📖 {% trans "Geliştirici Rehberi" %}</h3>
+        <p>{% trans "Çevirileri güncellemek için konteyner çalışırken şu komutları kullanın:" %}</p>
+        <code>docker-compose exec app python manage.py makemessages -l en -l tr</code>
+        <code>docker-compose exec app python manage.py compilemessages</code>
+    </div>
+
     <footer class="card" style="background: white;">
         <div class="btn-group" style="justify-content: center; margin-bottom: 20px;">
             {% for item in footer_menu %}
