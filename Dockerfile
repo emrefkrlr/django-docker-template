@@ -12,17 +12,31 @@ COPY ./scripts /scripts
 WORKDIR /app
 EXPOSE 8000
 
-# venv oluşturma ve pip güncelleme
-# psycopg2'nin Alpine Linux'ta doğru çalışması için gerekli bağımlılıklar
-# build-base: C derleyici ve diğer derleme araçları
-# libpq-dev: PostgreSQL istemci kütüphaneleri (psycopg2 için gerekli)
-# linux-headers: Bazı Python paketlerinin derlenmesi için gerekli
+# GÜNCELLEME NOTLARI:
+# 1. gettext eklendi (i18n desteği için zorunlu)
+# 2. libffi-dev eklendi (Bazı kripto ve auth paketleri için gerekebilir)
+# 3. jpeg-dev, zlib-dev vb. (Pillow'un tam performanslı çalışması için alpine'de önerilir)
+
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    apk add --no-cache build-base libpq-dev linux-headers && \
+    # Derleme araçlarını yükle
+    apk add --no-cache --virtual .build-deps \
+        build-base \
+        postgresql-dev \
+        musl-dev \
+        linux-headers \
+        libffi-dev \
+        jpeg-dev \
+        zlib-dev && \
+    # Çalışma zamanı araçlarını yükle (Bunlar silinmeyecek)
+    apk add --no-cache \
+        postgresql-client \
+        gettext \
+        libjpeg-turbo \
+        libpng && \
     /py/bin/pip install -r /requirements.txt && \
-    apk del build-base libpq-dev linux-headers && \
-    apk add --no-cache postgresql-client && \
+    # Gereksiz derleme araçlarını temizle (Konteyner boyutu için)
+    apk del .build-deps && \
     adduser --disabled-password --no-create-home app && \
     mkdir -p /vol/web/static && \
     mkdir -p /vol/web/media && \

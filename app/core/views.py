@@ -1,12 +1,10 @@
 from django.shortcuts import render
-from .models import Sample  # Sample modelini import ediyoruz
+from .models import Sample
 
 def index(request):
-    # Veritabanındaki tüm Sample objelerini çekiyoruz
+    """
+    Template test sayfası. 
+    Veritabanındaki Sample nesnelerini resim testi için gönderir.
+    """
     samples = Sample.objects.all()
-    
-    # context sözlüğü ile verileri template'e gönderiyoruz
-    context = {
-        'sample_list': samples
-    }
-    return render(request, 'index.html', context)
+    return render(request, 'index.html', {'sample_list': samples})

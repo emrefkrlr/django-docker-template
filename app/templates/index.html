@@ -1,55 +1,156 @@
 <!DOCTYPE html>
 {% load static %}
-{% load imagekit %} {# Yeni resim sistemimiz için gerekli #}
+{% load imagekit %}
+{% load i18n %}
 
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django Template Test Page</title>
+    <title>{{ project_name }} | System Dashboard</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <style>
-        .test-container { margin: 20px; padding: 20px; border: 1px solid #ccc; }
-        .image-box { display: inline-block; margin-right: 10px; text-align: center; }
-        img { border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .no-image { color: #888; font-style: italic; }
+        :root { --primary: #2563eb; --success: #22c55e; --warning: #f59e0b; --danger: #ef4444; --bg: #f8fafc; --dark: #1e293b; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: #1e293b; line-height: 1.5; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; border: 1px solid #e2e8f0; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, var(--dark), #334155); color: white; }
+        .admin-btn { background: var(--warning); color: var(--dark) !important; padding: 10px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 0 #b45309; }
+        .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #b45309; }
+        
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+        .status-item { padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 12px; background: #fff; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+        
+        /* Auth & Menu Styles */
+        .test-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .test-box { border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px; background: #fcfcfc; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        .btn { padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 0.9em; font-weight: 500; transition: 0.2s; border: 1px solid #cbd5e1; color: var(--dark); background: white; }
+        .btn:hover { background: #f1f5f9; border-color: var(--primary); color: var(--primary); }
+        .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-primary:hover { background: #1d4ed8; color: white; }
+
+        .image-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .img-card { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; text-align: center; background: #fff; }
+        /* Github Button */
+        .github-btn { display: inline-flex; align-items: center; gap: 8px; background: #24292e; color: white !important; padding: 10px 20px; border-radius: 30px; text-decoration: none; font-size: 0.9em; transition: 0.3s; margin-top: 15px; }
+        .github-btn:hover { background: #000; }
+        footer { text-align: center; padding: 40px; color: #64748b; border-top: 1px solid #e2e8f0; margin-top: 40px; }
     </style>
 </head>
-
 <body>
-    <h1>Django Template Başarıyla Çalışıyor!</h1>
-    <p>Statik dosya testi: <span style="color: green;">CSS Yüklendi ✅</span></p>
 
-    <div class="test-container">
-        <h2>Dinamik Resim & SEO Testi (Sample Model)</h2>
-        
-        {# sample_list'in view'dan geldiğini varsayıyoruz #}
-        {% for obj in sample_list %}
-            <div class="image-box">
-                <h3>Orijinal (Watermarklı)</h3>
-                {% if obj.attachment %}
-                    {# 1. Test: AVIF formatı (300x200) #}
-                    {% generateimage 'core:seo_image' source=obj.attachment width=300 height=200 format='AVIF' as img_avif %}
-                    <picture>
-                        <source srcset="{{ img_avif.url }}" type="image/avif">
-                        
-                        {# 2. Test: WebP formatı (300x200) #}
-                        {% generateimage 'core:seo_image' source=obj.attachment width=300 height=200 format='WEBP' as img_webp %}
-                        <source srcset="{{ img_webp.url }}" type="image/webp">
-                        
-                        <img src="{{ obj.attachment.url }}" alt="Test Resmi" width="300">
-                    </picture>
-                    <p><small>Format: AVIF/WebP (300x200)</small></p>
-                {% else %}
-                    <p class="no-image">Bu nesne için resim yüklenmemiş.</p>
-                {% endif %}
+<div class="container">
+    <header class="card header">
+        <div>
+            <h1 style="margin:0;">🚀 {{ project_name }}</h1>
+            {% get_current_language as CURRENT_LANG %}
+            <p style="margin:4px 0 0 0; opacity: 0.8;">Version: {{ project_version }} | {% trans "Dil" %}: {{ CURRENT_LANG }}</p>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="/"> 
+                
+                <select name="language" onchange="this.form.submit()" style="padding: 8px; border-radius: 6px; cursor: pointer;">
+                    {% get_current_language as CURRENT_LANG %}
+                    {% get_available_languages as ALL_LANGS %}
+                    {% for lang in ALL_LANGS %}
+                        <option value="{{ lang.0 }}" {% if lang.0 == CURRENT_LANG %}selected{% endif %}>
+                            {{ lang.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+            <a href="/admin/" target="_blank" class="admin-btn">⚙️ {% trans "Yönetim Paneli" %}</a>
+        </div>
+    </header>
+
+    <div class="card">
+        <h2 style="margin-top:0;">🛠️ {% trans "Test Merkezi" %}</h2>
+        <div class="status-grid">
+            <div class="status-item"><div class="dot"></div> <span>Static & CSS: <b>{% trans "Aktif" %}</b></span></div>
+            <div class="status-item"><div class="dot"></div> <span>i18n Prefix: <b>{% if request.LANGUAGE_CODE == 'tr' %}OFF{% else %}ON (/{{ request.LANGUAGE_CODE }}/){% endif %}</b></span></div>
+            <div class="status-item">
+                <div class="dot" style="background: {% if user.is_authenticated %}var(--success){% else %}var(--danger){% endif %};"></div> 
+                <span>{% trans "Oturum" %}: <b>{% if user.is_authenticated %}{{ user.email }}{% else %}{% trans "Ziyaretçi" %}{% endif %}</b></span>
             </div>
-        {% empty %}
-            <p>Henüz veritabanında test edilecek bir 'Sample' objesi yok. <br>
-            Lütfen Admin panelinden bir tane ekleyin.</p>
-        {% endfor %}
+        </div>
+
+        <div class="test-section">
+            <div class="test-box">
+                <h4>🔐 Django Allauth {% trans "Testi" %}</h4>
+                <div class="btn-group">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'account_logout' %}" class="btn">{% trans "Çıkış Yap" %}</a>
+                        <a href="{% url 'account_email' %}" class="btn">{% trans "E-posta Yönetimi" %}</a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="btn btn-primary">{% trans "Giriş Yap" %}</a>
+                        <a href="{% url 'account_signup' %}" class="btn">{% trans "Kayıt Ol" %}</a>
+                    {% endif %}
+                </div>
+                <p style="font-size: 0.8em; color: #64748b; margin-top: 10px;">* Allauth {% trans "şablonları ve yönlendirmeleri buradan kontrol edilebilir." %}</p>
+            </div>
+
+            <div class="test-box">
+                <h4>📌 {% trans "Dinamik Menü Testi" %}</h4>
+                <p><small>{% trans "Ana Menü" %}:</small></p>
+                <div class="btn-group">
+                    {% for item in main_menu %}
+                        <a href="{% if item.url_external %}{{ item.url_external }}{% elif item.url_name %}{% url item.url_name %}{% else %}#{% endif %}" 
+                           {% if item.url_external %}target="_blank"{% endif %} 
+                           class="btn">
+                           {{ item.title }}{% if item.url_external %} ↗{% endif %}
+                        </a>
+                    {% empty %}
+                        <small style="color: var(--danger);">{% trans "Menü bulunamadı." %}</small>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="card">
+        <h3>🖼️ {% trans "Görüntü İşleme (Watermark + WebP/AVIF)" %}</h3>
+        <div class="image-gallery">
+            {% for obj in sample_list %}
+                <div class="img-card">
+                    {% if obj.attachment %}
+                        {% generateimage 'core:seo_image' source=obj.attachment width=300 height=200 format='AVIF' as img_avif %}
+                        {% generateimage 'core:seo_image' source=obj.attachment width=300 height=200 format='WEBP' as img_webp %}
+                        <picture>
+                            <source srcset="{{ img_avif.url }}" type="image/avif">
+                            <source srcset="{{ img_webp.url }}" type="image/webp">
+                            <img src="{{ obj.attachment.url }}" alt="Test" style="width:100%; display:block;">
+                        </picture>
+                        <div style="padding:8px;"><small>Dinamik Format Dönüşümü</small></div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer class="card" style="background: white;">
+        <div class="btn-group" style="justify-content: center; margin-bottom: 20px;">
+            {% for item in footer_menu %}
+                <a href="{% if item.url_external %}{{ item.url_external }}{% elif item.url_name %}{% url item.url_name %}{% else %}#{% endif %}" 
+                   {% if item.url_external %}target="_blank"{% endif %} 
+                   style="color: var(--primary); text-decoration: none; font-weight: 500;">
+                   {{ item.title }}{% if item.url_external %} ↗{% endif %}
+                </a>
+                {% if not forloop.last %} | {% endif %}
+            {% endfor %}
+        </div>
+        <a href="https://github.com/emrefkrlr/django-docker-template" target="_blank" class="github-btn">
+            <svg height="20" width="20" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            GitHub: django-docker-template
+        </a>
+        <p>{{ contact_info.email }} | {{ contact_info.phone }}</p>
+        <p>&copy; {% now "Y" %} {{ project_name }} Dashboard</p>
+    </footer>
+</div>
 
 </body>
 </html>

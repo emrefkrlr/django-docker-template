@@ -1,0 +1,95 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-25 13:47+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: app/settings.py:99
+msgid "Turkish"
+msgstr ""
+
+#: app/settings.py:100
+msgid "English"
+msgstr ""
+
+#: core/models.py:6
+msgid "Başlık"
+msgstr ""
+
+#: templates/index.html:46
+msgid "Dil"
+msgstr ""
+
+#: templates/index.html:63
+msgid "Yönetim Paneli"
+msgstr ""
+
+#: templates/index.html:68
+msgid "Test Merkezi"
+msgstr ""
+
+#: templates/index.html:70
+msgid "Aktif"
+msgstr ""
+
+#: templates/index.html:74
+msgid "Oturum"
+msgstr ""
+
+#: templates/index.html:74
+msgid "Ziyaretçi"
+msgstr ""
+
+#: templates/index.html:80
+msgid "Testi"
+msgstr ""
+
+#: templates/index.html:83
+msgid "Çıkış Yap"
+msgstr ""
+
+#: templates/index.html:84
+msgid "E-posta Yönetimi"
+msgstr ""
+
+#: templates/index.html:86
+msgid "Giriş Yap"
+msgstr ""
+
+#: templates/index.html:87
+msgid "Kayıt Ol"
+msgstr ""
+
+#: templates/index.html:90
+msgid "şablonları ve yönlendirmeleri buradan kontrol edilebilir."
+msgstr ""
+
+#: templates/index.html:94
+msgid "Dinamik Menü Testi"
+msgstr ""
+
+#: templates/index.html:95
+msgid "Ana Menü"
+msgstr ""
+
+#: templates/index.html:104
+msgid "Menü bulunamadı."
+msgstr ""
+
+#: templates/index.html:112
+msgid "Görüntü İşleme (Watermark + WebP/AVIF)"
+msgstr ""
