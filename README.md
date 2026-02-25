@@ -22,6 +22,12 @@
     * `.env` üzerinden açılıp kapatılabilme özelliği.
 * **Performans:** Üretilen resimler `media/CACHE/` altında saklanır, tekrar tekrar işlenmez.
 
+* **Multi-Language (i18n):** TR/EN support with prefix-less default language.
+
+* **Dynamic Menus:** Database-driven header and footer menus with external URL support.
+
+* **System Dashboard:** A stylish index.html to monitor system status and test all features.
+
 
 ## 🖼️ Gelişmiş Resim İşleme ve SEO Yönetimi
 Bu template, görsel içeriklerin hem SEO performansını artırmak hem de sunucu kaynaklarını verimli kullanmak için Django-ImageKit, Pillow-Heif ve özel geliştirilmiş bir Watermark Service ile entegre gelir.
